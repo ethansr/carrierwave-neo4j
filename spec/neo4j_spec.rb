@@ -1,18 +1,19 @@
 require "spec_helper"
 
-def reset_class(uploader = DefaultUploader)
-  class_name = "User"
-  Object.send(:remove_const, class_name) rescue nil
-  user_class = Object.const_set(class_name, Class.new(Neo4j::Rails::Model))
 
-  user_class.class_eval do
+def reset_class(uploader = DefaultUploader)
+  User.class_eval do
     mount_uploader :image, uploader
   end
 
-  user_class
+  User
 end
 
 class DefaultUploader < CarrierWave::Uploader::Base; end
+
+class User < Neo4j::Rails::Model
+    mount_uploader :image, DefaultUploader
+end
 
 class PngUploader < CarrierWave::Uploader::Base
   def extension_white_list
